@@ -3,21 +3,24 @@ using EcommerceApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Forçar porta 8080 para o Railway
 builder.WebHost.UseUrls("http://*:8080");
 
-// Configurar Kestrel ANTES de Build
-builder.WebHost.ConfigureKestrel(options =>
+// Configurar Kestrel SOMENTE para desenvolvimento
+if (builder.Environment.IsDevelopment())
 {
-    options.ListenLocalhost(5188); // HTTP
-    options.ListenLocalhost(7188, listenOptions =>
+    builder.WebHost.ConfigureKestrel(options =>
     {
-        listenOptions.UseHttps();
+        options.ListenLocalhost(5188); // HTTP
+        options.ListenLocalhost(7188, listenOptions =>
+        {
+            listenOptions.UseHttps();
+        });
     });
-});
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,13 +35,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.MapControllers();
-
-var summaries = new[]
+// Só usar HTTPS redirection em desenvolvimento
+if (app.Environment.IsDevelopment())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    app.UseHttpsRedirection();
+}
+
+app.MapControllers();
 
 app.MapGet("/", () => "API de E-commerce - Use /swagger");
 
