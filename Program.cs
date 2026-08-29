@@ -3,22 +3,21 @@ using EcommerceApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 🔥 LER A VARIÁVEL DO RAILWAY
 var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-
-// Se não encontrar a variável, tenta no appsettings.json
 
 if (string.IsNullOrEmpty(connectionString))
 {
-    // Fallback: tenta ler do appsettings.json (apenas se não houver variável)
+    // Fallback para desenvolvimento local
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    Console.WriteLine($"⚠️ Usando connection string do appsettings.json: {(connectionString?.Contains("localhost") == true ? "LOCALHOST" : "ALTERNATIVA")}");
+    Console.WriteLine("⚠️ Usando connection string do appsettings.json (desenvolvimento local)");
 }
 else
 {
-    Console.WriteLine("✅ Connection String obtida da variável de ambiente!");
+    Console.WriteLine("✅ Connection String obtida da variável de ambiente do Railway!");
 }
 
-// Configurar o DbContext com a connection string
+// Configurar o DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -28,6 +27,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Aplicar migrações automaticamente
 if (!string.IsNullOrEmpty(connectionString))
 {
     using (var scope = app.Services.CreateScope())
@@ -43,10 +43,6 @@ if (!string.IsNullOrEmpty(connectionString))
             Console.WriteLine($"❌ Erro ao aplicar migrações: {ex.Message}");
         }
     }
-}
-else
-{
-    Console.WriteLine("❌ Connection String não encontrada!");
 }
 
 //if (app.Environment.IsDevelopment())
