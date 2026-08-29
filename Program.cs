@@ -3,17 +3,23 @@ using EcommerceApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔥 LER A VARIÁVEL DO RAILWAY
-var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+// 🔥 LER DO APPSETTINGS.JSON OU DA VARIÁVEL DE AMBIENTE
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString) || connectionString.Contains("localhost"))
+{
+    // Se não encontrou ou é localhost, tenta a variável de ambiente
+    connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+    if (!string.IsNullOrEmpty(connectionString))
+    {
+        Console.WriteLine($"✅ Connection String obtida da variável de ambiente! Tamanho: {connectionString.Length} caracteres");
+    }
+}
 
 if (string.IsNullOrEmpty(connectionString))
 {
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    Console.WriteLine("⚠️ Usando connection string do appsettings.json (desenvolvimento local)");
-}
-else
-{
-    Console.WriteLine("✅ Connection String obtida da variável manual!");
+    Console.WriteLine("❌ Connection String não encontrada!");
+    return;
 }
 
 // Configurar o DbContext
@@ -26,7 +32,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Aplicar migrações
+// Aplicar migrações automaticamente
 if (!string.IsNullOrEmpty(connectionString) && !connectionString.Contains("localhost"))
 {
     using (var scope = app.Services.CreateScope())
@@ -54,24 +60,3 @@ app.MapControllers();
 app.MapGet("/", () => "API de E-commerce - Use /swagger");
 
 app.Run();
-
-// 🔥 FUNÇÃO PARA CONVERTER URL POSTGRESQL PARA FORMATO NPGSQL
-static string ConvertPostgresUrlToConnectionString(string url)
-{
-    try
-    {
-        var uri = new Uri(url);
-        var userInfo = uri.UserInfo.Split(':');
-        var username = userInfo[0];
-        var password = userInfo.Length > 1 ? userInfo[1] : "";
-        var host = uri.Host;
-        var port = uri.Port > 0 ? uri.Port : 5432;
-        var database = uri.AbsolutePath.TrimStart('/');
-        return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"❌ Erro ao converter URL: {ex.Message}");
-        return url; // Retorna a URL original como fallback
-    }
-}
