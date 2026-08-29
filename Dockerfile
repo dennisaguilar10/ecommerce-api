@@ -1,25 +1,25 @@
-# Estágio 1: Build (compila a aplicação)
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# Estágio 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
-# Copia os arquivos do projeto e restaura as dependências
+# Copia os arquivos do projeto
 COPY . .
 RUN dotnet restore
 
-# Publica a aplicação em modo Release
+# Publica a aplicação
 RUN dotnet publish -c Release -o /app/publish
 
-# Estágio 2: Runtime (executa a aplicação)
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+# Estágio 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 
-# Copia os arquivos publicados do estágio de build
+# Copia os arquivos publicados
 COPY --from=build /app/publish .
 
-# Porta padrão que o Railway espera
+# Expõe a porta 8080
 EXPOSE 8080
 
-# Variável de ambiente para o Railway gerenciar a porta [citation:3][citation:4]
+# Define a URL base
 ENV ASPNETCORE_URLS=http://+:8080
 
 ENTRYPOINT ["dotnet", "EcommerceApi.dll"]

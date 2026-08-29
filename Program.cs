@@ -3,6 +3,8 @@ using EcommerceApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://*:8080");
+
 // Configurar Kestrel ANTES de Build
 builder.WebHost.ConfigureKestrel(options =>
 {
