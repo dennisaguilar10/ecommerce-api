@@ -3,18 +3,30 @@ using EcommerceApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔥 LER A VARIÁVEL DO RAILWAY
-var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+// 🔥 USAR O NOME EXATO DA VARIÁVEL DO RAILWAY
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL");
 
+// Se não encontrar, tenta o nome alternativo
 if (string.IsNullOrEmpty(connectionString))
 {
-    // Fallback para desenvolvimento local
+    connectionString = Environment.GetEnvironmentVariable("Postgres_DATABASE_PRIVATE_URL");
+}
+
+// Se ainda não encontrar, tenta a variável que você criou
+if (string.IsNullOrEmpty(connectionString))
+{
+    connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+}
+
+// Fallback para desenvolvimento local
+if (string.IsNullOrEmpty(connectionString))
+{
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     Console.WriteLine("⚠️ Usando connection string do appsettings.json (desenvolvimento local)");
 }
 else
 {
-    Console.WriteLine("✅ Connection String obtida da variável de ambiente do Railway!");
+    Console.WriteLine($"✅ Connection String obtida do Railway! Tamanho: {connectionString.Length} caracteres");
 }
 
 // Configurar o DbContext
@@ -27,8 +39,19 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Aplicar migrações automaticamente
-if (!string.IsNullOrEmpty(connectionString))
+// Lista todas as variáveis de ambiente (para debug)
+Console.WriteLine("=== VARIÁVEIS DE AMBIENTE ===");
+foreach (var env in Environment.GetEnvironmentVariables().Keys)
+{
+    if (env.ToString().Contains("DATABASE") || env.ToString().Contains("Connection") || env.ToString().Contains("POSTGRES"))
+    {
+        Console.WriteLine($"{env} = {Environment.GetEnvironmentVariable(env.ToString())}");
+    }
+}
+Console.WriteLine("=============================");
+
+// Aplicar migrações
+if (!string.IsNullOrEmpty(connectionString) && !connectionString.Contains("localhost"))
 {
     using (var scope = app.Services.CreateScope())
     {
