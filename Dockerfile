@@ -1,5 +1,5 @@
 # Estágio 1: Build (compila a aplicação)
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
 
 # Copia os arquivos do projeto e restaura as dependências
@@ -10,7 +10,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o /app/publish
 
 # Estágio 2: Runtime (executa a aplicação)
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 # Copia os arquivos publicados do estágio de build
