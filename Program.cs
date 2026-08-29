@@ -4,26 +4,16 @@ using EcommerceApi.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // 🔥 LER A VARIÁVEL DO RAILWAY
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL");
+var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
 
-if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
-{
-    Console.WriteLine("✅ Convertendo URL para formato Npgsql...");
-    connectionString = ConvertPostgresUrlToConnectionString(connectionString);
-}
-else if (!string.IsNullOrEmpty(connectionString))
-{
-    Console.WriteLine("⚠️ A variável não parece ser uma URL PostgreSQL.");
-}
-else
+if (string.IsNullOrEmpty(connectionString))
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     Console.WriteLine("⚠️ Usando connection string do appsettings.json (desenvolvimento local)");
 }
-
-if (!string.IsNullOrEmpty(connectionString))
+else
 {
-    Console.WriteLine($"✅ Connection String obtida! Tamanho: {connectionString.Length} caracteres");
+    Console.WriteLine("✅ Connection String obtida da variável manual!");
 }
 
 // Configurar o DbContext
