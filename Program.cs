@@ -3,16 +3,20 @@ using EcommerceApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
 
 // Se não encontrar a variável, tenta no appsettings.json
+
 if (string.IsNullOrEmpty(connectionString))
 {
+    // Fallback: tenta ler do appsettings.json (apenas se não houver variável)
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    Console.WriteLine($"⚠️ Usando connection string do appsettings.json: {(connectionString?.Contains("localhost") == true ? "LOCALHOST" : "ALTERNATIVA")}");
 }
-
-// Log para debug (opcional)
-Console.WriteLine($"Connection String: {(string.IsNullOrEmpty(connectionString) ? "NÃO ENCONTRADA" : "CONFIGURADA")}");
+else
+{
+    Console.WriteLine("✅ Connection String obtida da variável de ambiente!");
+}
 
 // Configurar o DbContext com a connection string
 builder.Services.AddDbContext<AppDbContext>(options =>
