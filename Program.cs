@@ -6,22 +6,24 @@ var builder = WebApplication.CreateBuilder(args);
 // 🔥 LER A VARIÁVEL DO RAILWAY
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL");
 
-// Converter URL para formato Npgsql se necessário
 if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
 {
     Console.WriteLine("✅ Convertendo URL para formato Npgsql...");
     connectionString = ConvertPostgresUrlToConnectionString(connectionString);
 }
-
-// Fallback para desenvolvimento local
-if (string.IsNullOrEmpty(connectionString))
+else if (!string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("⚠️ A variável não parece ser uma URL PostgreSQL.");
+}
+else
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     Console.WriteLine("⚠️ Usando connection string do appsettings.json (desenvolvimento local)");
 }
-else
+
+if (!string.IsNullOrEmpty(connectionString))
 {
-    Console.WriteLine($"✅ Connection String obtida do Railway! Tamanho: {connectionString.Length} caracteres");
+    Console.WriteLine($"✅ Connection String obtida! Tamanho: {connectionString.Length} caracteres");
 }
 
 // Configurar o DbContext
@@ -66,16 +68,20 @@ app.Run();
 // 🔥 FUNÇÃO PARA CONVERTER URL POSTGRESQL PARA FORMATO NPGSQL
 static string ConvertPostgresUrlToConnectionString(string url)
 {
-    // Formato: postgresql://usuario:senha@host:porta/database
-    var uri = new Uri(url);
-    
-    var userInfo = uri.UserInfo.Split(':');
-    var username = userInfo[0];
-    var password = userInfo.Length > 1 ? userInfo[1] : "";
-    
-    var host = uri.Host;
-    var port = uri.Port > 0 ? uri.Port : 5432;
-    var database = uri.AbsolutePath.TrimStart('/');
-    
-    return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+    try
+    {
+        var uri = new Uri(url);
+        var userInfo = uri.UserInfo.Split(':');
+        var username = userInfo[0];
+        var password = userInfo.Length > 1 ? userInfo[1] : "";
+        var host = uri.Host;
+        var port = uri.Port > 0 ? uri.Port : 5432;
+        var database = uri.AbsolutePath.TrimStart('/');
+        return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Erro ao converter URL: {ex.Message}");
+        return url; // Retorna a URL original como fallback
+    }
 }
