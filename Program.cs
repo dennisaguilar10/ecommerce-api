@@ -15,11 +15,11 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Swagger apenas em desenvolvimento
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.MapControllers();
 
