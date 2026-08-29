@@ -3,19 +3,14 @@ using EcommerceApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔥 USAR O NOME EXATO DA VARIÁVEL DO RAILWAY
+// 🔥 LER A VARIÁVEL DO RAILWAY
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_PRIVATE_URL");
 
-// Se não encontrar, tenta o nome alternativo
-if (string.IsNullOrEmpty(connectionString))
+// Converter URL para formato Npgsql se necessário
+if (!string.IsNullOrEmpty(connectionString) && connectionString.StartsWith("postgresql://"))
 {
-    connectionString = Environment.GetEnvironmentVariable("Postgres_DATABASE_PRIVATE_URL");
-}
-
-// Se ainda não encontrar, tenta a variável que você criou
-if (string.IsNullOrEmpty(connectionString))
-{
-    connectionString = Environment.GetEnvironmentVariable("ConnectionString");
+    Console.WriteLine("✅ Convertendo URL para formato Npgsql...");
+    connectionString = ConvertPostgresUrlToConnectionString(connectionString);
 }
 
 // Fallback para desenvolvimento local
@@ -38,17 +33,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-// Lista todas as variáveis de ambiente (para debug)
-Console.WriteLine("=== VARIÁVEIS DE AMBIENTE ===");
-foreach (var env in Environment.GetEnvironmentVariables().Keys)
-{
-    if (env.ToString().Contains("DATABASE") || env.ToString().Contains("Connection") || env.ToString().Contains("POSTGRES"))
-    {
-        Console.WriteLine($"{env} = {Environment.GetEnvironmentVariable(env.ToString())}");
-    }
-}
-Console.WriteLine("=============================");
 
 // Aplicar migrações
 if (!string.IsNullOrEmpty(connectionString) && !connectionString.Contains("localhost"))
@@ -78,3 +62,20 @@ app.MapControllers();
 app.MapGet("/", () => "API de E-commerce - Use /swagger");
 
 app.Run();
+
+// 🔥 FUNÇÃO PARA CONVERTER URL POSTGRESQL PARA FORMATO NPGSQL
+static string ConvertPostgresUrlToConnectionString(string url)
+{
+    // Formato: postgresql://usuario:senha@host:porta/database
+    var uri = new Uri(url);
+    
+    var userInfo = uri.UserInfo.Split(':');
+    var username = userInfo[0];
+    var password = userInfo.Length > 1 ? userInfo[1] : "";
+    
+    var host = uri.Host;
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    var database = uri.AbsolutePath.TrimStart('/');
+    
+    return $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+}
