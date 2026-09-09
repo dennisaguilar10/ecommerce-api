@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EcommerceApi.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EcommerceApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CategoriaController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -17,6 +19,7 @@ namespace EcommerceApi.Controllers
 
         // GET: api/categorias
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var categorias = await _context.Categorias
@@ -33,6 +36,7 @@ namespace EcommerceApi.Controllers
 
         // GET: api/categorias/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(int id)
         {
             var categoria = await _context.Categorias
@@ -59,6 +63,7 @@ namespace EcommerceApi.Controllers
 
         // POST: api/categorias
         [HttpPost]
+        [Authorize(Roles = "Backoffice, Admin")]
         public async Task<IActionResult> Post([FromBody] DTOs.CategoriaCreateDto dto)
         {
             var categoria = new Categoria
@@ -76,6 +81,7 @@ namespace EcommerceApi.Controllers
 
         // PUT: api/categorias/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Backoffice, Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] Categoria categoria)
         {
             if (id != categoria.Id)
@@ -89,6 +95,7 @@ namespace EcommerceApi.Controllers
 
         // DELETE: api/categorias/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var categoria = await _context.Categorias

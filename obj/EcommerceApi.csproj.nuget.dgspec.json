@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Ecoomerce\\ecommerceapi\\EcommerceApi.csproj": {}
+    "C:\\Ecoomerce\\EcommerceApi\\EcommerceApi.csproj": {}
   },
   "projects": {
-    "C:\\Ecoomerce\\ecommerceapi\\EcommerceApi.csproj": {
+    "C:\\Ecoomerce\\EcommerceApi\\EcommerceApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Ecoomerce\\ecommerceapi\\EcommerceApi.csproj",
+        "projectUniqueName": "C:\\Ecoomerce\\EcommerceApi\\EcommerceApi.csproj",
         "projectName": "EcommerceApi",
-        "projectPath": "C:\\Ecoomerce\\ecommerceapi\\EcommerceApi.csproj",
+        "projectPath": "C:\\Ecoomerce\\EcommerceApi\\EcommerceApi.csproj",
         "packagesPath": "C:\\Users\\Dennis\\.nuget\\packages\\",
-        "outputPath": "C:\\Ecoomerce\\ecommerceapi\\obj\\",
+        "outputPath": "C:\\Ecoomerce\\EcommerceApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Dennis\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -46,6 +46,14 @@
           "framework": "net9.0",
           "targetAlias": "net9.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.11, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.11, )"
@@ -60,6 +68,10 @@
               "target": "Package",
               "version": "[9.0.11, )"
             },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.22.0, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.3, )"
@@ -67,6 +79,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.22.0, )"
             }
           },
           "imports": [
@@ -80,24 +96,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.19, 9.0.19]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[9.0.19, 9.0.19]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[9.0.19, 9.0.19]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[9.0.19, 9.0.19]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"

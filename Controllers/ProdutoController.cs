@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EcommerceApi.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EcommerceApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProdutoController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -17,6 +19,7 @@ namespace EcommerceApi.Controllers
 
         // GET: api/produto
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get()
         {
             var produtos = await _context.Produtos
@@ -28,6 +31,7 @@ namespace EcommerceApi.Controllers
 
         // GET: api/produto/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(int id)
         {
             var produto = await _context.Produtos
@@ -42,6 +46,7 @@ namespace EcommerceApi.Controllers
 
         // POST: api/produto
         [HttpPost]
+        [Authorize(Roles = "Backoffice, Admin")]
         public async Task<IActionResult> Post([FromBody] DTOs.ProdutoCreateDto dto)
         {
             var produto = new Produto
@@ -60,7 +65,8 @@ namespace EcommerceApi.Controllers
         }
 
         // PUT: api/produto/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}")]   
+        [Authorize(Roles = "Backoffice, Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] Produto produto)
         {
             if (id != produto.Id)
@@ -84,6 +90,7 @@ namespace EcommerceApi.Controllers
 
         // DELETE: api/produto/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);

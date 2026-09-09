@@ -132,3 +132,13 @@ C:\Ecoomerce\ecommerceapi\obj\Debug\net9.0\refint\EcommerceApi.dll
 C:\Ecoomerce\ecommerceapi\obj\Debug\net9.0\EcommerceApi.pdb
 C:\Ecoomerce\ecommerceapi\obj\Debug\net9.0\EcommerceApi.genruntimeconfig.cache
 C:\Ecoomerce\ecommerceapi\obj\Debug\net9.0\ref\EcommerceApi.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\BCrypt-Net-Next.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.Bcl.Cryptography.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Ecoomerce\ecommerceapi\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll

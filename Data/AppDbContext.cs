@@ -11,6 +11,7 @@ namespace EcommerceApi.Data
 
         public DbSet<Produto> Produtos { get; set; }    
         public DbSet<Categoria> Categorias { get; set; } // 👈
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 
     public class Produto
@@ -32,7 +33,16 @@ namespace EcommerceApi.Data
         public ICollection<Produto> Produtos { get; set; }
     }
 
-        // DTO para categoria sem produtos
+    public class Usuario
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Senha { get; set; } = string.Empty;
+        public string Role { get; set; } = "User";
+        public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
+    }
+
     public class CategoriaDto
     {
         public int Id { get; set; }
